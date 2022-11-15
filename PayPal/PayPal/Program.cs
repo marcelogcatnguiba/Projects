@@ -1,4 +1,5 @@
 ﻿using PayPal.Entities;
+using PayPal.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -22,17 +23,10 @@ namespace PayPal
             int installment = int.Parse(Console.ReadLine());
 
             Contract contract = new Contract(number, date, totalvalue);
-            for (int i = 1; i <= installment; i++)
-            {
-                DateTime dueDate = contract.Date.AddMonths(i);
-                double amount = contract.TotalValue / installment;
-                Installment installment1 = new Installment(dueDate, amount);
-
-                contract.AddInstallment(installment1);
-
-            }
-
-            foreach(Installment i in contract.Installment)
+            ContractService contractService = new ContractService(new PayPalService());
+            contractService.ProcessContract(contract, installment);
+            
+            foreach (Installment i in contract.Installment)
             {
                 Console.WriteLine(i);
             }
